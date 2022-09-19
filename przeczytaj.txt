@@ -1,0 +1,6 @@
+Należy zainstalować bazę danych MongoDB Compass i uruchomić na domyślnym porcie  localhost:27017
+Następnie zainstalować zależności dla folderów server i client
+Wczytać przykładowe książki poleceniem npm run data:import i uruchomić server poleceniem npm run dev
+Na koniec użyć polecenia npm start w folderze client 
+
+abt zobaczyć zmiany po wypożyczeniu lub oddaniu książki trzeba odświeżyć stronę, ten element trzeba jeszcze dopracować

@@ -1,0 +1,11 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    color: hsl(0, 0%, 100%);
+    font-family: 'Ubuntu';
+}
+
+body {
+    background-color: hsl(207, 26%, 17%);
+}
