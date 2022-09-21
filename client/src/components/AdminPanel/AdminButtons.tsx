@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Button } from './Popup';
+import { Button } from '../Popup';
 
 type AdminButtonsProps = {
     bookID: string;

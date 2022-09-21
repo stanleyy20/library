@@ -1,4 +1,4 @@
-import { BooksData } from '../types/fetch';
+import { BooksData } from '../../types/fetch';
 
 import { BookBody, BooksDetails, Text, Title, UserButton } from './AllBooks';
 
@@ -29,7 +29,7 @@ export const AvailableBooks: React.FunctionComponent<AllBooksProps> = ({
                             {book.available ? (
                                 userType === 'admin' ? null : (
                                     <>
-                                        <UserButton data-issue-id={book._id} onClick={borrowedBook}>
+                                        <UserButton data-issue-id={book.book_id} onClick={borrowedBook}>
                                             Borrow a book
                                         </UserButton>
                                     </>

@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
 import styled from 'styled-components';
-import { VIEW } from './Dashboard';
-import { Popup } from './Popup';
+import { VIEW } from '../Dashboard';
+import { Popup } from '../Popup';
 
 type AdminPanelProps = {
     getAllBooks(): Promise<void>;

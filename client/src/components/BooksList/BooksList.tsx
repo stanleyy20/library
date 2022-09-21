@@ -1,10 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { VIEW } from './Dashboard';
-import { Popup } from './Popup';
+import { VIEW } from '../Dashboard';
+import { Popup } from '../Popup';
 
-import { BooksData, IssueData } from '../types/fetch';
+import { BooksData, IssueData } from '../../types/fetch';
 import { UserBooks } from './UserBooks';
 import { AvailableBooks } from './AvailableBooks';
 import { AllBooks } from './AllBooks';
@@ -14,8 +14,8 @@ type BooksListProps = {
     setUserBooks: React.Dispatch<React.SetStateAction<Array<BooksData>>>;
     setAvailableBooks: React.Dispatch<React.SetStateAction<Array<BooksData>>>;
     setWhichListViews: React.Dispatch<React.SetStateAction<number>>;
-    deleteBook(event: React.SyntheticEvent): Promise<void>;
     getAllBooks(): Promise<void>;
+    getBorrowedBook(): Promise<void>;
     allBooks: Array<BooksData>;
     userBooks: Array<BooksData>;
     availableBooks: Array<BooksData>;
@@ -30,7 +30,6 @@ export const BooksList: React.FunctionComponent<BooksListProps> = ({
     userID,
     whichListView,
     issue,
-    deleteBook,
     allBooks,
     availableBooks,
     getAllBooks,
@@ -38,7 +37,7 @@ export const BooksList: React.FunctionComponent<BooksListProps> = ({
     setAvailableBooks,
     setUserBooks,
     userBooks,
-    setWhichListViews,
+    getBorrowedBook,
 }) => {
     const [title, setTitle] = useState<string>('');
     const [author, setAuthor] = useState<string>('');
@@ -48,10 +47,53 @@ export const BooksList: React.FunctionComponent<BooksListProps> = ({
 
     const { ALL, AVAILABLE_BOOKS, USER_BOOKS } = VIEW;
 
+    const returnBook = async (event: React.SyntheticEvent) => {
+        event.preventDefault();
+        const bookID = event.currentTarget.getAttribute('data-issue-id');
+        const response = await fetch(`http://localhost:1337/api/${bookID}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                bookID,
+            }),
+        });
+
+        const data = await response.json();
+
+        if (data.status === 'ok') {
+            availabilityChange(event, bookID, true);
+            alert('return book successful');
+            getBorrowedBook();
+        }
+    };
+
+    const deleteBook = async (event: React.SyntheticEvent) => {
+        event.preventDefault();
+        const id = event.currentTarget.getAttribute('data-delete-id');
+        const response = await fetch(`http://localhost:1337/api/book/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                id,
+            }),
+        });
+
+        const data = await response.json();
+
+        if (data.status === 'ok') {
+            alert('delete book successful');
+            getAllBooks();
+        }
+    };
+
     const editBook = async (event: React.SyntheticEvent) => {
         event.preventDefault();
-        const response = await fetch('http://localhost:1337/api/edit-book', {
-            method: 'POST',
+        const response = await fetch(`http://localhost:1337/api/book/${editBookId}`, {
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -83,7 +125,7 @@ export const BooksList: React.FunctionComponent<BooksListProps> = ({
     const borrowedBook = async (event: React.SyntheticEvent) => {
         event.preventDefault();
         const bookID = event.currentTarget.getAttribute('data-issue-id');
-        const response = await fetch('http://localhost:1337/api/borrowed-books', {
+        const response = await fetch('http://localhost:1337/api/issue', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -99,13 +141,14 @@ export const BooksList: React.FunctionComponent<BooksListProps> = ({
         if (data.status === 'ok') {
             alert('borrow book successful');
             availabilityChange(event, bookID, false);
+            getAllBooks();
         }
     };
 
     const availabilityChange = async (event: React.SyntheticEvent, bookID: any, available: boolean) => {
         event.preventDefault();
-        await fetch('http://localhost:1337/api/available-book', {
-            method: 'POST',
+        await fetch(`http://localhost:1337/api/available/${bookID}`, {
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -116,53 +159,34 @@ export const BooksList: React.FunctionComponent<BooksListProps> = ({
         });
     };
 
+    const changeBooksList = async () => {
+        if (whichListView === ALL) {
+            setAllBooks(allBooks);
+            console.log(allBooks);
+        }
+        if (whichListView === AVAILABLE_BOOKS) {
+            const tempBooks = allBooks?.filter((allBooks) => allBooks.available === 'true');
+            setAvailableBooks(tempBooks);
+            console.log(tempBooks);
+        }
+        if (whichListView === USER_BOOKS) {
+            const userBooks = issue?.filter((issue) => issue.user_id === userID);
+            console.log(issue);
+            const tempBooks = userBooks?.map((userBook) => {
+                return allBooks.filter((userBok) => userBook.book_id === userBok.book_id);
+            });
+            setUserBooks(tempBooks.flat());
+            console.log(tempBooks.flat());
+        }
+    };
+
     const handleOnClick = (event: React.SyntheticEvent) => {
         setEditBookId(event.currentTarget.getAttribute('data-edit-id'));
         setEditPopup(true);
     };
 
-    const arrayToRenderBooksList = async () => {
-        if (whichListView === ALL) {
-            setAllBooks(allBooks);
-        }
-        if (whichListView === AVAILABLE_BOOKS) {
-            const tempBooks = allBooks?.filter((allBooks) => allBooks.available === true);
-            setAvailableBooks(tempBooks);
-            getAllBooks();
-        }
-        if (whichListView === USER_BOOKS) {
-            const userBooks = issue?.filter((issue) => issue.user === userID);
-            const tempBooks = userBooks?.map((userBook) => {
-                return allBooks.filter((userBok) => userBook.book === userBok._id);
-            });
-
-            setUserBooks(tempBooks.flat());
-        }
-    };
-
-    const returnBook = async (event: React.SyntheticEvent) => {
-        event.preventDefault();
-        const bookID = event.currentTarget.getAttribute('data-issue-id');
-        const response = await fetch('http://localhost:1337/api/borrowed-books', {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                bookID,
-            }),
-        });
-
-        const data = await response.json();
-
-        if (data.status === 'ok') {
-            availabilityChange(event, bookID, true);
-            alert('return book successful');
-        }
-    };
-
     useEffect(() => {
-        arrayToRenderBooksList();
+        changeBooksList();
     }, [whichListView]);
 
     return (

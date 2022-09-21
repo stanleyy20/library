@@ -27,9 +27,15 @@ export const Registry = () => {
         });
 
         const data = await response.json();
+        console.log(data);
 
         if (data.status === 'ok') {
+            alert('Create account successful');
             navigate('/login');
+        }
+
+        if (data.status !== 'ok') {
+            alert('This email has benn used');
         }
     }
 

@@ -4,8 +4,8 @@ import { BooksData, IssueData, UserData } from '../types/fetch';
 
 import jwtDecode from 'jwt-decode';
 import { useNavigate } from 'react-router-dom';
-import { AdminPanel } from './AdminPanel';
-import { BooksList } from './BooksList';
+import { AdminPanel } from './AdminPanel/AdminPanel';
+import { BooksList } from './BooksList/BooksList';
 import { UserPanel } from './UserPanel';
 
 export const VIEW = {
@@ -35,16 +35,17 @@ export const Dashboard = () => {
         });
 
         const data: Promise<UserData> = req.json();
+        console.log((await data).user_id);
 
         if ((await data).status === 'ok') {
             setUserName((await data).name);
             setUserRole((await data).role);
-            setUserID((await data)._id);
+            setUserID((await data).user_id);
         }
     }
 
     async function getAllBooks() {
-        await fetch('http://localhost:1337/api/all-books', {
+        await fetch('http://localhost:1337/api/books', {
             method: 'GET',
         })
             .then((response) => {
@@ -61,7 +62,7 @@ export const Dashboard = () => {
     }
 
     async function getBorrowedBooks() {
-        await fetch('http://localhost:1337/api/borrowed-books', {
+        await fetch('http://localhost:1337/api/issue', {
             method: 'GET',
         })
             .then((response) => {
@@ -76,27 +77,6 @@ export const Dashboard = () => {
                 console.error('błąd wczytywania danych, spróbuj ponownie');
             });
     }
-
-    const deleteBook = async (event: React.SyntheticEvent) => {
-        event.preventDefault();
-        const id = event.currentTarget.getAttribute('data-delete-id');
-        const response = await fetch('http://localhost:1337/api/book', {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                id,
-            }),
-        });
-
-        const data = await response.json();
-
-        if (data.status === 'ok') {
-            alert('delete book successful');
-            getAllBooks();
-        }
-    };
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -132,13 +112,13 @@ export const Dashboard = () => {
                     userType={userRole}
                     whichListView={whichListView}
                     issue={issue}
-                    deleteBook={deleteBook}
                     setAllBooks={setAllBooks}
                     availableBooks={availableBooks}
                     setAvailableBooks={setAvailableBooks}
                     setUserBooks={setUserBooks}
                     userBooks={userBooks}
                     setWhichListViews={setWhichListViews}
+                    getBorrowedBook={getBorrowedBooks}
                 />
             </Section>
         </Container>

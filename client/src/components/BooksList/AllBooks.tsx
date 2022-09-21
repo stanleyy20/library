@@ -1,7 +1,7 @@
 import styled from 'styled-components';
-import { BooksData } from '../types/fetch';
-import { AdminButtons } from './AdminButtons';
-import { Button } from './Popup';
+import { BooksData } from '../../types/fetch';
+import { AdminButtons } from '../AdminPanel/AdminButtons';
+import { Button } from '../Popup';
 
 type AllBooksProps = {
     allBooks: Array<BooksData>;
@@ -27,17 +27,17 @@ export const AllBooks: React.FunctionComponent<AllBooksProps> = ({
                         <BooksDetails>
                             <Text>Author: {book.author}</Text>
                             <Text>ISBN: {book.isbn}</Text>
-                            {book.available ? (
+                            {book.available === 'true' ? (
                                 userType === 'admin' ? (
                                     <AdminButtons
                                         bookIsbn={book.isbn}
-                                        bookID={book._id}
+                                        bookID={book.book_id}
                                         handleOnClick={handleOnClick}
                                         deleteBook={deleteBook}
                                     />
                                 ) : (
                                     <>
-                                        <UserButton data-issue-id={book._id} onClick={borrowedBook}>
+                                        <UserButton data-issue-id={book.book_id} onClick={borrowedBook}>
                                             Borrow a book
                                         </UserButton>
                                     </>
@@ -94,7 +94,7 @@ export const BooksDetails = styled.div`
     display: flex;
     flex-direction: column;
     gap: 25px;
-    justify-content: space-between;
+    justify-content: space-evenly;
     align-items: center;
 `;
 

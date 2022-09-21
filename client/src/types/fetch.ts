@@ -2,20 +2,21 @@ export type UserData = {
     status: string;
     name: string;
     role: string;
-    _id: string;
+    user_id: string;
 };
 
 export type BooksData = {
-    _id: string;
+    book_id: string;
     isbn: number;
     title: string;
     author: string;
-    available: boolean;
+    available: string;
 };
 
 export type IssueData = {
-    _id: string;
-    user: string;
     book: string;
+    id: string;
+    user_id: string;
+    book_id: string;
     returned: boolean;
 };

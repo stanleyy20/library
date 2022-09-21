@@ -1,4 +1,4 @@
-import { BooksData } from '../types/fetch';
+import { BooksData } from '../../types/fetch';
 
 import { BookBody, BooksDetails, Text, Title, UserButton } from './AllBooks';
 
@@ -18,7 +18,7 @@ export const UserBooks: React.FunctionComponent<AllBooksProps> = ({ userBooks, r
                             <Text>Author: {book.author}</Text>
                             <Text>ISBN: {book.isbn}</Text>
                             {
-                                <UserButton data-issue-id={book._id} onClick={returnBook}>
+                                <UserButton data-issue-id={book.book_id} onClick={returnBook}>
                                     Return Book
                                 </UserButton>
                             }

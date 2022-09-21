@@ -29,6 +29,7 @@ export const Login = () => {
 
         if (!data.user) {
             alert('Please check your username and password');
+            console.log(data);
         }
     }
 

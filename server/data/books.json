@@ -1,0 +1,60 @@
+[
+    {   
+        "id": "1",
+        "title ":  "Eloquent JavaScript, Third Edition",
+        "author" : "Marijn Haverbeke",
+        "isbn" :  "9781593279509",
+        "available": true
+    },
+    {
+        "id": "2",
+        "title ":  "Practical Modern JavaScript",
+        "author" : "Nicolás Bevacqua",
+        "isbn" :  "9781491943533",
+        "available": true
+    },
+
+    {
+        "id": "3",
+        "title ":  "Understanding ECMAScript 6",
+        "author" : "Nicholas C. Zakas",
+        "isbn" :  "9781593277574",
+        "available": true
+    },
+    {
+        "id": "4",
+        "title ":  "Speaking JavaScript",
+        "author" : "Axel Rauschmayer",
+        "isbn" :  "9781449365035",
+        "available": true
+    },
+
+    {
+        "id": "5",
+        "title ":  "Learning JavaScript Design Patterns",
+        "author" : "Addy Osmani",
+        "isbn" :  "9781449331818",
+        "available": true
+    },
+    {
+        "id": "6",
+        "title ":  "You Don't Know JS Yet",
+        "author" : "Kyle Simpson",
+        "isbn" :  "9798602477429",
+        "available": true
+    },
+    {
+        "id": "7",
+        "title ":  "Pro Git",
+        "author" : "Scott Chacon and Ben Straub",
+        "isbn" :  "9781484200766",
+        "available": true
+    },
+    {
+        "id": "8",
+        "title ":  "Rethinking Productivity in Software Engineering",
+        "author" : "Caitlin Sadowski, Thomas Zimmermann",
+        "isbn" :  "9781484242216",
+        "available": true
+    }
+ ]
