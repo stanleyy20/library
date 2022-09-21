@@ -50,7 +50,7 @@ export const BooksList: React.FunctionComponent<BooksListProps> = ({
     const returnBook = async (event: React.SyntheticEvent) => {
         event.preventDefault();
         const bookID = event.currentTarget.getAttribute('data-issue-id');
-        const response = await fetch(`http://localhost:1337/api/${bookID}`, {
+        const response = await fetch(`http://localhost:1337/api/issue/${bookID}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',

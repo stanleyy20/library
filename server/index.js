@@ -1,19 +1,15 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
-const mongoose = require('mongoose');
-const User = require('./models/users.model');
+
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const Book = require('./models/books.model');
-const Issue = require('./models/issue.model');
 
 const pool = require('./connection.js');
 
 app.use(cors());
 app.use(express.json());
 
-// mongoose.connect('mongodb://localhost:27017/library');
 
 app.post('/api/register', async (req, res) => {
     try {
@@ -55,7 +51,6 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
-//Get all users
 app.get('/api/users', (req, res) => {
     pool.query(`Select * from users`, (err, result) => {
         if (!err) {
@@ -79,7 +74,6 @@ app.get('/api/user', async (req, res) => {
     }
 });
 
-//Get all books
 app.get('/api/books', (req, res) => {
     pool.query(`Select * from books`, (err, result) => {
         if (!err) {
@@ -176,7 +170,6 @@ app.get('/api/issue', async (req, res) => {
 app.delete('/api/issue/:id', async (req, res) => {
     const { bookID } = req.body;
     try {
-        const { id } = req.body;
         await pool.query(`DELETE FROM public.issue WHERE book_id= $1`, [bookID]);
 
         res.json({ status: 'ok' });
