@@ -6,10 +6,21 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
 const pool = require('./connection.js');
+const unique_id = require('unique-id-key');
 
 app.use(cors());
 app.use(express.json());
 
+const authUser = (permission) => {
+    return (req, res, next) => {
+        const userRole = req.body.userRole;
+        if (permission.includes(userRole)) {
+            next();
+        } else {
+            return res.status(401).json('yoy dont have permission ');
+        }
+    };
+};
 
 app.post('/api/register', async (req, res) => {
     try {
@@ -51,14 +62,6 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
-app.get('/api/users', (req, res) => {
-    pool.query(`Select * from users`, (err, result) => {
-        if (!err) {
-            res.send(result.rows);
-        }
-    });
-});
-
 app.get('/api/user', async (req, res) => {
     const token = req.headers['x-access-token'];
 
@@ -82,14 +85,15 @@ app.get('/api/books', (req, res) => {
     });
 });
 
-app.post('/api/book', async (req, res) => {
+app.post('/api/book', authUser(['admin']), async (req, res) => {
     const { isbn, title, author } = req.body;
     const available = true;
+    const book_id = unique_id.RandomNum(5);
     try {
         pool.query(
-            `INSERT INTO public.books(title, author, isbn, available) 
-                       values($1,$2,$3,$4)`,
-            [title, author, isbn, available]
+            `INSERT INTO public.books(book_id, title, author, isbn, available) 
+                       values($1,$2,$3,$4,$5)`,
+            [book_id, title, author, isbn, available]
         );
         res.json({ status: 'ok' });
     } catch (err) {
@@ -97,7 +101,7 @@ app.post('/api/book', async (req, res) => {
     }
 });
 
-app.delete('/api/book/:id', async (req, res) => {
+app.delete('/api/book/:id', authUser(['admin']), async (req, res) => {
     try {
         const { id } = req.body;
         await pool.query(`DELETE FROM public.books WHERE book_id= $1`, [id]);
@@ -108,7 +112,7 @@ app.delete('/api/book/:id', async (req, res) => {
     }
 });
 
-app.put('/api/book/:id', async (req, res) => {
+app.put('/api/book/:id', authUser(['admin']), async (req, res) => {
     try {
         const { editBookId, title, author, isbn } = req.body;
         const available = true;
@@ -134,7 +138,7 @@ app.put('/api/book/:id', async (req, res) => {
     }
 });
 
-app.put('/api/available/:id', async (req, res) => {
+app.put('/api/available/:id', authUser(['user']), async (req, res) => {
     const { bookID, available } = req.body;
 
     try {
@@ -145,7 +149,7 @@ app.put('/api/available/:id', async (req, res) => {
     }
 });
 
-app.post('/api/issue', async (req, res) => {
+app.post('/api/issue', authUser(['user']), async (req, res) => {
     const { userID, bookID } = req.body;
     try {
         pool.query(
@@ -167,7 +171,7 @@ app.get('/api/issue', async (req, res) => {
     });
 });
 
-app.delete('/api/issue/:id', async (req, res) => {
+app.delete('/api/issue/:id', authUser(['user']), async (req, res) => {
     const { bookID } = req.body;
     try {
         await pool.query(`DELETE FROM public.issue WHERE book_id= $1`, [bookID]);

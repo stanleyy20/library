@@ -23,6 +23,7 @@ type BooksListProps = {
     userType: string;
     userID: string;
     whichListView: number;
+    userRole: string;
 };
 
 export const BooksList: React.FunctionComponent<BooksListProps> = ({
@@ -38,6 +39,7 @@ export const BooksList: React.FunctionComponent<BooksListProps> = ({
     setUserBooks,
     userBooks,
     getBorrowedBook,
+    userRole,
 }) => {
     const [title, setTitle] = useState<string>('');
     const [author, setAuthor] = useState<string>('');
@@ -57,6 +59,7 @@ export const BooksList: React.FunctionComponent<BooksListProps> = ({
             },
             body: JSON.stringify({
                 bookID,
+                userRole,
             }),
         });
 
@@ -79,6 +82,7 @@ export const BooksList: React.FunctionComponent<BooksListProps> = ({
             },
             body: JSON.stringify({
                 id,
+                userRole,
             }),
         });
 
@@ -102,6 +106,7 @@ export const BooksList: React.FunctionComponent<BooksListProps> = ({
                 title,
                 author,
                 isbn,
+                userRole,
             }),
         });
 
@@ -133,6 +138,7 @@ export const BooksList: React.FunctionComponent<BooksListProps> = ({
             body: JSON.stringify({
                 userID,
                 bookID,
+                userRole,
             }),
         });
 
@@ -162,12 +168,10 @@ export const BooksList: React.FunctionComponent<BooksListProps> = ({
     const changeBooksList = async () => {
         if (whichListView === ALL) {
             setAllBooks(allBooks);
-            console.log(allBooks);
         }
         if (whichListView === AVAILABLE_BOOKS) {
             const tempBooks = allBooks?.filter((allBooks) => allBooks.available === 'true');
             setAvailableBooks(tempBooks);
-            console.log(tempBooks);
         }
         if (whichListView === USER_BOOKS) {
             const userBooks = issue?.filter((issue) => issue.user_id === userID);
@@ -176,7 +180,6 @@ export const BooksList: React.FunctionComponent<BooksListProps> = ({
                 return allBooks.filter((userBok) => userBook.book_id === userBok.book_id);
             });
             setUserBooks(tempBooks.flat());
-            console.log(tempBooks.flat());
         }
     };
 

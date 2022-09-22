@@ -119,6 +119,7 @@ export const Dashboard = () => {
                     userBooks={userBooks}
                     setWhichListViews={setWhichListViews}
                     getBorrowedBook={getBorrowedBooks}
+                    userRole={userRole}
                 />
             </Section>
         </Container>
