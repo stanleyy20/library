@@ -27,14 +27,28 @@ app.post('/api/register', async (req, res) => {
         const { name, email, password, role } = req.body;
         const newPassword = await bcrypt.hash(password, 10);
 
-        pool.query(
-            `INSERT INTO public.users(name, email, password, role) 
+        if (!name || !email || !password || !role) {
+            res.status(400).json({
+                status: 400,
+                message: 'Not all information',
+            });
+
+            return;
+        }
+
+        const userEmail = pool.query(`SELECT * FROM public.users WHERE email= $1`, [email]);
+        if ((await userEmail).rows.length !== 0) return res.json({ status: 'error', message: 'duplicate email' });
+        if ((await userEmail).rows.length === 0) {
+            pool.query(
+                `INSERT INTO public.users(name, email, password, role) 
                        values($1,$2,$3,$4)`,
-            [name, email, newPassword, role]
-        );
-        res.json({ status: 'ok' });
+                [name, email, newPassword, role]
+            );
+
+            res.json({ status: 'ok' });
+        }
     } catch (err) {
-        es.json({ status: 'error', message: 'duplicate email' });
+        res.json({ status: 'error', message: 'duplicate email' });
     }
 });
 

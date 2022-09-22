@@ -34,8 +34,12 @@ export const Registry = () => {
             navigate('/login');
         }
 
-        if (data.status !== 'ok') {
-            alert('This email has benn used');
+        if (data.status === 400) {
+            alert(data.message);
+        }
+
+        if (data.status === 'error') {
+            alert('This email already exists');
         }
     }
 
