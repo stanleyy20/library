@@ -39,30 +39,27 @@ app.post('/api/register', async (req, res) => {
 });
 
 app.post('/api/login', async (req, res) => {
-    const { name, email, password } = req.body;
-    const user = await pool.query(`SELECT * FROM public.users WHERE email= $1`, [email]);
-
-    if (user) {
-        const isPasswordValid = bcrypt.compare(password, user.rows[0].password);
+    try {
+        const { email, password } = req.body;
+        const user = await pool.query(`SELECT * FROM public.users WHERE email= $1`, [email]);
+        if (user.rows.length === 0) return res.status(401).json({ error: 'email is incorrect' });
+        const isPasswordValid = await bcrypt.compare(password, user.rows[0].password);
+        if (!isPasswordValid) return res.status(401).json({ error: 'Incorrect password' });
         if (isPasswordValid) {
             const token = jwt.sign(
                 {
-                    name: name,
                     email: email,
                 },
                 'secret123'
             );
-
-            return res.json({ status: 'ok', user: token });
+            return res.json({ status: 'ok', user: token, password: isPasswordValid });
         }
-    }
-
-    if (!user) {
+    } catch (error) {
         res.json({ status: 'error', message: 'Invalid login', user: false });
     }
 });
 
-app.get('/api/user', async (req, res) => {
+app.get('/api/auth', async (req, res) => {
     const token = req.headers['x-access-token'];
 
     try {

@@ -27,7 +27,7 @@ export const Dashboard = () => {
     const [whichListView, setWhichListViews] = useState<number>(VIEW.ALL);
 
     async function authUser() {
-        const req = await fetch('http://localhost:1337/api/user', {
+        const req = await fetch('http://localhost:1337/api/auth', {
             method: 'GET',
             headers: {
                 'x-access-token': String(localStorage.getItem('token')),
@@ -102,7 +102,7 @@ export const Dashboard = () => {
             <h1 style={{ paddingLeft: '10px', paddingBottom: '50px' }}>Hello {userName}</h1>
             <Section>
                 {userRole === 'admin' ? (
-                    <AdminPanel setWhichListView={setWhichListViews} getAllBooks={getAllBooks} />
+                    <AdminPanel setWhichListView={setWhichListViews} getAllBooks={getAllBooks} userRole={userRole} />
                 ) : null}
                 {userRole === 'user' ? <UserPanel setWhichListView={setWhichListViews} /> : null}
                 <BooksList

@@ -161,6 +161,7 @@ export const BooksList: React.FunctionComponent<BooksListProps> = ({
             body: JSON.stringify({
                 bookID,
                 available,
+                userRole,
             }),
         });
     };

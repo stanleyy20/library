@@ -7,9 +7,10 @@ import { Popup } from '../Popup';
 type AdminPanelProps = {
     getAllBooks(): Promise<void>;
     setWhichListView: React.Dispatch<React.SetStateAction<number>>;
+    userRole: string;
 };
 
-export const AdminPanel: React.FunctionComponent<AdminPanelProps> = ({ setWhichListView, getAllBooks }) => {
+export const AdminPanel: React.FunctionComponent<AdminPanelProps> = ({ setWhichListView, getAllBooks, userRole }) => {
     const [title, setTitle] = useState<string>('');
     const [author, setAuthor] = useState<string>('');
     const [isbn, setIsbn] = useState<string>('');
@@ -26,6 +27,7 @@ export const AdminPanel: React.FunctionComponent<AdminPanelProps> = ({ setWhichL
                 title,
                 author,
                 isbn,
+                userRole,
             }),
         });
 
