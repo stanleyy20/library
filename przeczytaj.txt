@@ -1,9 +1,0 @@
-Użyłem bazy danych PostgreSQL,
-W aplikacji pgAdmin w domyślnej bazie danych o nazwie 'postgres' należy użyć narzędzia Query Tool i wkleić 
-zawartość pliku database.sql
-
-Następnie zainstalować zależności dla folderów server i client
-Wczytać przykładowe książki poleceniem npm run data:import i uruchomić server poleceniem npm run dev
-Na koniec użyć polecenia npm start w folderze client 
-
-abt zobaczyć zmiany po wypożyczeniu lub oddaniu książki trzeba odświeżyć stronę, ten element trzeba jeszcze dopracować
